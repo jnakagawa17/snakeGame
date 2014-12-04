@@ -39,8 +39,9 @@
 
 #include <MeggyJrSimple.h>    // Required code, line 1 of 2.
 int heading = 0; // possible values are 0, 1, 2, 3
-int xApple = random(8);
-int yApple = random(8);
+int xApple = random (8);
+int yApple = random (8);
+int marker = 4;
 
 struct Point{
   int xPlayer; // coordinates of player dot
@@ -48,8 +49,10 @@ struct Point{
 };
 
 Point p1 = {3, 4};
+Point p2 = {4, 4};
+Point p3 = {5, 4};
 
-int snakeArray[64] = {p1};
+Point snakeArray[64] = {p1, p2, p3};
 
 void setup()                    // run once, when the sketch starts
 {
@@ -68,19 +71,23 @@ void loop()                     // run over and over again
   Update player based on direction
   Correct for wrap
   */
-  drawThings();
-  directions();
-  Serial.print("X is");
-  Serial.println(xPlayer);
-  Serial.println(yPlayer);
-  Serial.println();
-}
-
-void drawThings()
-{
-  DrawPx(xPlayer, yPlayer, 1);
+  ClearSlate();
+  drawSnake();
+  drawApple();
   DisplaySlate();
   delay(500);
+  directions();
+  updateSnake();
+  moveHead();
+  checkApple();
+}
+
+void drawSnake()
+{
+  for(int i = 0; i < marker; i++)
+  {
+    DrawPx(snakeArray[i].xPlayer, snakeArray[i].yPlayer, Blue);
+  }
 }
 
 void directions()
@@ -88,7 +95,7 @@ void directions()
   CheckButtonsPress();
   if(Button_Left)
   {
-    heading = 4;
+    heading = 3;
   }
   if(Button_Right)
   {
@@ -102,46 +109,67 @@ void directions()
   {
     heading = 0;
   }
+}
 
+void moveHead()
+{
   if(heading == 0)
   {
-    if(yPlayer < 7)
+    if(snakeArray[0].yPlayer < 7)
     {
-    yPlayer = yPlayer + 1;
+      snakeArray[0].yPlayer = snakeArray[0].yPlayer + 1;
     }
     else
-    yPlayer = 0;
+    snakeArray[0].yPlayer = 0;
   }
   if(heading == 1)
   {
-    if(xPlayer < 7)
+    if(snakeArray[0].xPlayer < 7)
     {
-    xPlayer = xPlayer + 1;
+      snakeArray[0].xPlayer = snakeArray[0].xPlayer + 1;
     }
     else
-    xPlayer = 0;
+    snakeArray[0].xPlayer = 0;
   }
   if(heading == 2)
   {
-    if(yPlayer > 0)
+    if(snakeArray[0].yPlayer > 0)
     {
-    yPlayer = yPlayer - 1;
+      snakeArray[0].yPlayer = snakeArray[0].yPlayer - 1;
     }
     else
-    yPlayer = 7;
+    snakeArray[0].yPlayer = 7;
   } 
   if(heading == 3)
   {
-    if(xPlayer > 0)
+    if(snakeArray[0].xPlayer > 0)
     {
-    xPlayer = xPlayer - 1;
+      snakeArray[0].xPlayer = snakeArray[0].xPlayer - 1;
     }
     else
-    xPlayer = 7;
+    snakeArray[0].xPlayer = 7;
   } 
+}
+
+void drawApple()
+{
+  DrawPx(xApple, yApple, Red);
 }
 
 void checkApple()
 {
-  
+  if (xApple == snakeArray[0].xPlayer && yApple == snakeArray[0].yPlayer)
+  {
+    xApple == random (8);
+    yApple == random (8);
+    drawApple();
+  }
+}
+
+void updateSnake()
+{
+  for(int i = marker - 1; i > 0; i--)
+  {
+    snakeArray[i] = snakeArray[i - 1];
+  }
 }
