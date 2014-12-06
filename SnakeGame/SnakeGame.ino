@@ -72,14 +72,15 @@ void loop()                     // run over and over again
   Correct for wrap
   */
   ClearSlate();
-  drawSnake();
   drawApple();
+  drawSnake();
   DisplaySlate();
-  delay(500);
+  delay(300);
   directions();
+  checkApple();
   updateSnake();
   moveHead();
-  checkApple();
+
 }
 
 void drawSnake()
@@ -158,11 +159,15 @@ void drawApple()
 
 void checkApple()
 {
-  if (xApple == snakeArray[0].xPlayer && yApple == snakeArray[0].yPlayer)
+  if (xApple == snakeArray[0].xPlayer) 
   {
-    xApple == random (8);
-    yApple == random (8);
-    drawApple();
+    if (yApple == snakeArray[0].yPlayer)
+    {
+      xApple = random (8);
+      yApple = random (8);
+      marker = marker + 1;
+      drawApple();
+    }
   }
 }
 
